@@ -43,7 +43,7 @@ bot.onText(/\/s (.+)/, (msg, match) => {
 
     bot.sendVoice(chatId, data.AudioStream, responseParams);
 
-    console.log(`Chat ${chatId} received voice for "${text} with ${voice}"`);
+    console.log(`Chat ${chatId} received voice for "${text}" with ${voice}`);
   });
 
 });
