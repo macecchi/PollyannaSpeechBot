@@ -10,7 +10,6 @@
   "license": "ISC",
   "dependencies": {
     "aws-sdk": ">= 2.0.9",
-    "node-telegram-bot-api": "^0.24.0",
-    "node-uuid": ">= 1.4.1"
+    "node-telegram-bot-api": "^0.24.0"
   }
 }
