@@ -5,7 +5,6 @@ let TelegramBot = require('node-telegram-bot-api');
 let Bot = new TelegramBot(Config.telegramBotToken, { polling: true });
 let Polly = new PollyClient();
 
-let availableVoices;
 let voiceForChat = {};
 
 Bot.on('message', (msg) => {
@@ -45,7 +44,7 @@ Bot.onText(/\/v (.+)/, (msg, match) => {
   let voices = Polly.availableVoices || [];
   for (let voice of voices) {
     if (voice.Name.toLowerCase() == requestedVoice.toLowerCase()) {
-      voiceForChat[chatId] = voice.Name;
+      voiceForChat[chatId] = voice.Id;
       Bot.sendMessage(chatId, `Done! You are now using ${voice.Name}.`);
       console.log(`Chat ${chatId} changed voice to ${voice.Name}`);
       return;
