@@ -1,23 +1,21 @@
 const index = require('./index');
 
-let context = {
-	succeed: () => {
-		console.log('Succeeded');
-	},
-	fail: () => {
-		console.log('Failed');
-	}
+const event = {
+  body: {
+    message: {
+      text: '/s teste',
+      chat: {
+        id: 68305226
+      },
+    },
+  },
 };
 
-let event = {
-	body: {
-		message: {
-			text: '/s teste',
-			chat: {
-				id: 68305226
-			},
-		},
-	},
-};
+index.handler(event, {}, (error, response) => {
+  if (error) {
+    console.error('Failed');
+    return;
+  }
 
-index.handler(event, context);
+  console.log('Succeeded.\n', response);
+});

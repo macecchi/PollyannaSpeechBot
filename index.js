@@ -29,12 +29,12 @@ function processCommands(message) {
   if (message) {
     const commandArguments = helper.parseCommand(message.trim());
     if (commandArguments === null) {
-      return commands.error('Invalid Command');
+      return commands.warn('Invalid Command');
     }
 
     const commandKeys = Object.keys(commandArguments);
     if (commandKeys.length === 0 && !commands[commandKeys[0]]) {
-      return commands.error('Invalid Command');
+      return commands.warn('Invalid Command');
     }
 
     const command = commandKeys[0];
@@ -44,11 +44,13 @@ function processCommands(message) {
   return commands.error('Event not specified');
 }
 
-exports.handler = (event, context) => {
+exports.handler = (event, context, callback) => {
   let message;
   if (event.body.message && event.body.message.text) {
     message = event.body.message.text;
   }
+
+  console.log(`Received command: '${message}'`);
   const command = processCommands(message);
 
   let chatId;
@@ -60,19 +62,19 @@ exports.handler = (event, context) => {
     command.then((response) => {
       const processTelegram = sendMessageToTelegram(chatId, response);
       processTelegram.then(() => {
-        context.succeed();
+        callback(null, { 'status': 'ok' });
       }).catch((error) => {
-        console.log('Failed to send command response to Telegram', error);
-        context.fail();
+        console.error('Failed to send command response to Telegram', error);
+        callback(error, { 'status': 'Failed to send command response to Telegram' });
       });
     }).catch((error) => {
-      console.log('Failed to process command', error);
+      console.error('Failed to process command', error);
       const processTelegram = sendMessageToTelegram(chatId, error);
       processTelegram.then(() => {
-        context.succeed();
+        callback(null, { 'status': 'failed to process command' });
       }).catch((error) => {
-        console.log('Failed to send error response to Telegram', error);
-        context.fail();
+        console.error('Failed to send error response to Telegram', error);
+        callback(error, { 'status': 'Failed to send error response to Telegram' });
       });
     });
   }
