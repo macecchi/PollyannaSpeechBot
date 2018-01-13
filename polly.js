@@ -23,17 +23,17 @@ class PollyClient {
     });
   }
 
-  updateAvailableVoices() {
-    let _this = this;
-    this.polly.describeVoices({}, (err, data) => {
-      if (err || data == null) {
-        console.error('Polly: unable to update the list of available voices.', err);
-        return;
-      }
+  getAvailableVoices() {
+    return new Promise((resolve, reject) => {
+      this.polly.describeVoices({}, (err, data) => {
+        if (err || data == null) {
+          console.error('Polly: unable to update the list of available voices.', err);
+          reject(err);
+        }
+        resolve(data.Voices);
+      });
+    })
 
-      _this.availableVoices = data.Voices;
-      console.log(`Polly: updated the list of available voices. Total ${_this.availableVoices.length} voices available.`);
-    });
   }
 }
 

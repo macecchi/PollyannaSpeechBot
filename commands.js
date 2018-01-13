@@ -1,4 +1,5 @@
 'use strict';
+var { fetchPreferences, savePreferences } = require('./persist');
 const PollyClient = require('./polly');
 const Polly = new PollyClient();
 
@@ -7,20 +8,48 @@ module.exports = {
     return Promise.reject(new Error(error));
   },
 
-  s(commandArguments) {
+  s(commandArguments, chatId) {
     return new Promise((resolve, reject) => {
-      const text = commandArguments[0];
-      const voiceName = 'Cristiano';
+      const text = commandArguments;
 
-      Polly.synthesizeText(text, voiceName, (err, audioStream) => {
-        if (err) {
-          console.log(err);
-          reject();
-          return;
+      fetchPreferences(chatId).then((preference) => {
+        const voice = preference !== undefined ? preference.voice_id.S : 'Cristiano';
+
+        Polly.synthesizeText(text, voice, (err, audioStream) => {
+          if (err) {
+            console.log(err);
+            reject();
+            return;
+          }
+
+          return resolve({voice: audioStream, caption: text});
+        });
+      });
+    });
+  },
+
+  v(commandArguments, chatId) {
+    return new Promise((resolve, reject) => {
+      const desiredVoice = commandArguments;
+
+      Polly.getAvailableVoices().then((voices) => {
+        const voice = voices.find((voiceItem) => {
+          return voiceItem.Name.toLowerCase() === desiredVoice.toLowerCase();
+        });
+
+        if (voice) {
+          savePreferences(chatId, voice.Id).then((preference) => {
+            resolve({ message: `Voice updated to ${voice.Name}.` })
+          }).catch((err) => reject({
+            message: 'Sorry, we were not able to update the voice. Try again later.'
+          }))
+        } else {
+          reject({ message: 'Sorry, the provided voice is not available.' });
         }
 
-        return resolve({voice: audioStream, caption: text});
-      });
+      }).catch((err) => reject({
+        message: 'Sorry, we were not able to update the voice. Try again later.'
+      }))
     });
   },
 

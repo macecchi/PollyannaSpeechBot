@@ -25,7 +25,7 @@ function sendMessageToTelegram(chatId, data) {
   }
 }
 
-function processCommands(message) {
+function processCommands(message, chatId) {
   if (message) {
     const commandArguments = helper.parseCommand(message.trim());
     if (commandArguments === null) {
@@ -38,7 +38,7 @@ function processCommands(message) {
     }
 
     const command = commandKeys[0];
-    return commands[command](commandArguments[command]);
+    return commands[command](commandArguments[command].join(' '), chatId);
   }
 
   return commands.error('Event not specified');
@@ -50,13 +50,13 @@ exports.handler = (event, context, callback) => {
     message = event.body.message.text;
   }
 
-  console.log(`Received command: '${message}'`);
-  const command = processCommands(message);
-
   let chatId;
   if (event.body.message && event.body.message.chat && event.body.message.chat.id) {
     chatId = event.body.message.chat.id;
   }
+
+  console.log(`Received command '${message}' from chat ${chatId}`);
+  const command = processCommands(message, chatId);
 
   if (chatId) {
     command.then((response) => {
