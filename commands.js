@@ -53,4 +53,20 @@ module.exports = {
     });
   },
 
+  voices(commandArguments, chatId) {
+    return new Promise((resolve, reject) => {
+
+      Polly.getAvailableVoices().then((voices) => {
+        const voicesList = voices.map((voice) => `\n- ${voice.Name} (${voice.LanguageCode})`);
+
+        let messageText = `Available voices: ${voicesList}`
+        messageText += `\nTo change the voice, enter /v and the name of the voice.`
+
+        resolve({ message: messageText })
+      }).catch((err) => reject({
+        message: 'Sorry, we were not able to retrieve the available voices. Try again later.'
+      }))
+    });
+  },
+
 };
