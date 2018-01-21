@@ -23,5 +23,5 @@ jobs:
           key: v1-dependencies-{{ checksum "package.json" }}
 
       - run:
-        name: Deploy to AWS Lambda
-        command: npm run deploy
+          name: Deploy to AWS Lambda
+          command: npm run deploy
