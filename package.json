@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node index.js"
+    "start": "node index.js",
+    "deploy": "aws-lambda-upload -v --lambda pollyanna_speech_bot --zip pollyanna.zip --region us-east-1 index.js"
   },
   "author": "",
   "license": "ISC",
@@ -13,5 +14,9 @@
     "aws-sdk": ">= 2.0.9",
     "bluebird": "^3.5.1",
     "node-telegram-bot-api": "^0.30.0"
+  },
+  "devDependencies": {
+    "aws-lambda-upload": "^0.2.2",
+    "supports-color": "^5.1.0"
   }
 }
