@@ -34,4 +34,38 @@ const savePreferences = (chatId, voice) => {
     });
 }
 
-module.exports = { fetchPreferences, savePreferences };
+const fetchAnswer = (chatId, line) => {
+    return new Promise((resolve, reject) => {
+        const dynamodb = new AWS.DynamoDB();
+        dynamodb.getItem({
+            TableName: "pollyanna_bot_answers",
+            Key: {
+                'chat_id' : { N: chatId.toString() },
+                'line' : { S: line.toLowerCase() },
+            },
+        }, (err, data) => {
+            if (err) reject(err);
+            else resolve(data.Item);
+        });
+    });
+}
+
+const saveAnswer = (chatId, line, answer) => {
+    return new Promise((resolve, reject) => {
+        const dynamodb = new AWS.DynamoDB();
+        dynamodb.putItem({
+            TableName: "pollyanna_bot_answers",
+            Item: {
+                'chat_id' : { N: chatId.toString() },
+                'line': { S: line.toLowerCase().trim() },
+                'answer': { S: answer.trim() },
+            },
+        }, (err, data) => {
+            if (err) reject(err);
+            else resolve(data.Item);
+        });
+    });
+}
+
+
+module.exports = { fetchPreferences, savePreferences, saveAnswer, fetchAnswer };
