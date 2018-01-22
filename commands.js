@@ -1,5 +1,5 @@
 'use strict';
-var { fetchPreferences, savePreferences } = require('./persist');
+var { fetchPreferences, savePreferences, saveAnswer, fetchAnswer } = require('./persist');
 const PollyClient = require('./polly');
 const Polly = new PollyClient();
 
@@ -49,7 +49,7 @@ module.exports = {
 
       }).catch((err) => reject({
         message: 'Sorry, we were not able to update the voice. Try again later.'
-      }))
+      }));
     });
   },
 
@@ -69,4 +69,52 @@ module.exports = {
     });
   },
 
+  /* learn */
+  l(commandArguments, chatId) {
+    return new Promise((resolve, reject) => {
+      const [line, answer] = commandArguments.split('=');
+
+      if(answer) {
+        saveAnswer(chatId, line, answer).then(() => {
+          return resolve({ message: 'Lesson learned! Thanks!'});
+        }).catch((err) => reject({
+          message: 'Sorry, I was not able to learn that. Try again later.'
+        }));
+      } else {
+        reject({ message: 'Oops! Please teach me using the format: <line> = <answer>' })
+      }
+    });
+  },
+
+  /* answer */
+  a(commandArguments, chatId) {
+    return new Promise((resolve, reject) => {
+      const line = commandArguments;
+
+      const preferencesPromise = fetchPreferences(chatId);
+      const answerPromise = fetchAnswer(chatId, line);
+
+      Promise.all([preferencesPromise, answerPromise]).then(([preference, answerItem]) => {
+        const voice = preference !== undefined ? preference.voice_id.S : 'Cristiano';
+        const text = answerItem.answer.S;
+
+        if (text) {
+          Polly.synthesizeText(answerItem.answer.S, voice, (err, audioStream) => {
+            if (err) {
+              console.log(err);
+              reject();
+              return;
+            }
+
+            resolve({voice: audioStream, caption: text});
+          });
+        } else {
+          reject({ message: 'Sorry, I am not able to respond to that. Could you please teach me?' })
+        }
+
+      }).catch((err) => reject({
+        message: 'Sorry, I am not able to respond to that. Could you please teach me?'
+      }));
+    });
+  },
 };
