@@ -17,7 +17,7 @@ export const handler = async (event, context, callback) => {
     await sendMessage(response, chatId);
   } catch (error) {
     await sendMessage({
-      message: 'Sorry, there was an error.'
+      text: 'Sorry, there was an error.'
     }, chatId);
     callback(error, action);
     return;

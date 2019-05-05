@@ -91,7 +91,7 @@ describe('Bot', () => {
 
     expect(sendMessage).toHaveBeenCalledTimes(1);
     expect(sendMessage).toHaveBeenCalledWith({
-      message: 'Sorry, there was an error.'
+      text: 'Sorry, there was an error.'
     }, chatId);
   });
 

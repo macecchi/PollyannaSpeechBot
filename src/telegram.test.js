@@ -16,9 +16,7 @@ describe('Telegram client', () => {
   });
 
   it('calls send message method when message field is present', () => {
-    const message = {
-      message: text
-    };
+    const message = { text };
 
     sendMessage(message, chatId);
 
@@ -30,13 +28,13 @@ describe('Telegram client', () => {
   it('calls send voice method when voice field is present', () => {
     const message = {
       voice: 'foo bar audio',
-      caption: 'foo bar',
+      text,
     };
 
     sendMessage(message, chatId);
 
     expect(TelegramBot.prototype.sendVoice).toHaveBeenCalledTimes(1);
-    expect(TelegramBot.prototype.sendVoice).toHaveBeenCalledWith(chatId, message.voice, { caption: message.caption });
+    expect(TelegramBot.prototype.sendVoice).toHaveBeenCalledWith(chatId, message.voice, { caption: text });
     expect(TelegramBot.prototype.sendMessage).not.toHaveBeenCalled();
   });
 });

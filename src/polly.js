@@ -1,40 +1,17 @@
-let AWS = require('aws-sdk');
+import AWS from 'aws-sdk';
 
-class PollyClient {
-  constructor() {
-    AWS.config.region = 'us-east-1';
-    this.polly = new AWS.Polly();
-  }
+const polly = new AWS.Polly({
+  region: 'us-east-1',
+});
 
-  synthesizeText(text, voice, callback) {
-    let params = {
-      Text: text,
-      VoiceId: voice,
-      OutputFormat: 'mp3'
-    };
+export const synthesizeText = async (text, voice, callback) => {
+  const params = {
+    Text: text,
+    VoiceId: voice || 'Justin',
+    OutputFormat: 'mp3',
+  };
 
-    this.polly.synthesizeSpeech(params, (err, data) => {
-      if (err || data == null) {
-        callback(err, null);
-        return;
-      }
+  const data = await polly.synthesizeSpeech(params).promise();
+  return data.AudioStream;
+};
 
-      callback(null, data.AudioStream);
-    });
-  }
-
-  getAvailableVoices() {
-    return new Promise((resolve, reject) => {
-      this.polly.describeVoices({}, (err, data) => {
-        if (err || data == null) {
-          console.error('Polly: unable to update the list of available voices.', err);
-          reject(err);
-        }
-        resolve(data.Voices);
-      });
-    })
-
-  }
-}
-
-module.exports = PollyClient;
