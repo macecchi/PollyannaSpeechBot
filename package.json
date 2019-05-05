@@ -2,7 +2,6 @@
   "name": "pollyanna-speech-bot",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
   "scripts": {
     "test": "jest",
     "start": "NTBA_FIX_350=1 NTBA_FIX_319=1 babel-node src/start.js",
