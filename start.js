@@ -1,4 +1,4 @@
-const index = require('./index');
+import { handler } from './bot';
 
 const event = {
   body: {
@@ -11,9 +11,9 @@ const event = {
   },
 };
 
-index.handler(event, {}, (error, response) => {
+handler(event, {}, (error, response) => {
   if (error) {
-    console.error('Failed');
+    console.error('Failed.\n', error, response);
     return;
   }
 
