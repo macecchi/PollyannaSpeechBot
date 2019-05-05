@@ -24,5 +24,11 @@
     "aws-lambda-upload": "^0.2.2",
     "jest": "^24.8.0",
     "supports-color": "^5.1.0"
+  },
+  "jest": {
+    "coveragePathIgnorePatterns": [
+      "/node_modules/",
+      "/dist/"
+    ]
   }
 }

@@ -7,7 +7,6 @@ export const handler = async (event, context, callback) => {
   const { message } = event.body;
   const chatId = message.chat.id;
   const action = parseAction(message.text);
-  const actionName = action ? action.name || 'answer' : null;
   console.log('action:', action);
 
   try {
