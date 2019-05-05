@@ -2,7 +2,7 @@ version: 2
 jobs:
   build:
     docker:
-      - image: circleci/node:6.10
+      - image: circleci/node:8
 
     working_directory: ~/repo
 
@@ -12,10 +12,9 @@ jobs:
       - restore_cache:
           keys:
           - v1-dependencies-{{ checksum "package.json" }}
-          # fallback to using the latest cache if no exact match is found
           - v1-dependencies-
 
-      - run: npm install
+      - run: yarn
 
       - save_cache:
           paths:
@@ -24,4 +23,4 @@ jobs:
 
       - run:
           name: Deploy to AWS Lambda
-          command: npm run deploy
+          command: yarn build && yarn deploy
