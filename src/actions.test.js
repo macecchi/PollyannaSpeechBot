@@ -3,6 +3,7 @@ import speak from './actions/speak';
 import voices from './actions/voices';
 import setVoice from './actions/setVoice';
 import answer from './actions/answer';
+import learn from './actions/learn';
 
 describe('Commands', () => {
   it('has a speak action', () => {
@@ -19,5 +20,9 @@ describe('Commands', () => {
 
   it('has an answer action', () => {
     expect(actions['answer']).toEqual(answer);
+  });
+
+  it('has a learn action', () => {
+    expect(actions['learn']).toEqual(learn);
   });
 });
