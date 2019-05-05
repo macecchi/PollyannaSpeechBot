@@ -13,7 +13,11 @@ const fetchPreferences = (chatId) => {
             },
         }, (err, data) => {
             if (err) reject(err);
-            else resolve(data.Item);
+            else {
+                const item = data.Item;
+                const voice = item ? item.voice_id.S : null;
+                resolve(voice);
+            }
         });
     });
 }
