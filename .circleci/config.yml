@@ -22,5 +22,9 @@ jobs:
           key: v1-dependencies-{{ checksum "package.json" }}
 
       - run:
+          name: Run tests
+          command: yarn test
+
+      - run:
           name: Deploy to AWS Lambda
           command: yarn build && yarn deploy
