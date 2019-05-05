@@ -11,6 +11,14 @@ Available on Telegram as [@PollyannaBot](https://telegram.me/PollyannaBot).
 - Change the voice: `/v Amy`
 - List available voices: `/voices`
 
+### Testing locally
+
+You can invoke the bot from a shell using the `start` command. Edit the file `start.js` with your Telegram chat ID and run the command:
+
+```bash
+yarn start "/s test"
+```
+
 ## Inspiration
 
 This bot was inspired by the original [@SpeechBot](https://telegram.me/SpeechBot) from [lasermarty/SpeechBot](https://github.com/lasermarty/SpeechBot), which sadly does not work anymore.
