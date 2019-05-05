@@ -3,13 +3,14 @@ import { sendMessage } from './telegram';
 import actions from './actions';
 
 const mockActionResponse = {
-  message: 'bla',
+  text: 'bla',
 };
 
 const mockActionError = new Error('fail');
 
 jest.mock('./actions', () => ({
   test: () => Promise.resolve(mockActionResponse),
+  blank: () => Promise.resolve(null),
   error: () => Promise.reject(mockActionError),
 }));
 
@@ -63,6 +64,15 @@ describe('Bot handler', () => {
 
       expect(sendMessage).toHaveBeenCalledTimes(1);
       expect(sendMessage).toHaveBeenCalledWith(mockActionResponse, chatId);
+    });
+
+    it('does not send a message if the action does not have a response', async () => {
+      const callback = jest.fn();
+      const event = eventWithMessage('/blank');
+
+      await handler(event, {}, callback);
+
+      expect(sendMessage).not.toHaveBeenCalled();
     });
   });
 

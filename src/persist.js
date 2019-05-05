@@ -49,7 +49,11 @@ const fetchAnswer = (chatId, line) => {
             },
         }, (err, data) => {
             if (err) reject(err);
-            else resolve(data.Item);
+            else {
+                const item = data.Item;
+                const answer = item ? item.answer.S : null;
+                resolve(answer);
+            }
         });
     });
 }

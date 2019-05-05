@@ -1,11 +1,14 @@
 import actions from './actions';
-import { parseAction } from './helpers';
+import { parseAction } from './input';
 import { sendMessage } from './telegram';
 
 export const handler = async (event, context, callback) => {
+  console.log('event:', JSON.stringify(event));
   const { message } = event.body;
   const chatId = message.chat.id;
   const action = parseAction(message.text);
+  const actionName = action ? action.name || 'answer' : null;
+  console.log('action:', action);
 
   try {
     if (!action || !actions[action.name]) {
@@ -16,7 +19,9 @@ export const handler = async (event, context, callback) => {
     }
 
     const response = await actions[action.name](action.arguments, chatId);
-    await sendMessage(response, chatId);
+    if (response) {
+      await sendMessage(response, chatId);
+    }
   } catch (error) {
     const errorMessage = 'Sorry, there was an error.';
     sendMessage({ text: errorMessage }, chatId);

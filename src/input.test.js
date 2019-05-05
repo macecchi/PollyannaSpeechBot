@@ -1,4 +1,4 @@
-import { parseAction } from './helpers';
+import { parseAction } from './input';
 
 describe('Helpers', () => {
   it('returns the action name from message with only the action', () => {
@@ -21,7 +21,7 @@ describe('Helpers', () => {
     expect(action.arguments).toEqual('foo bar');
   });
 
-  it('returns a undefined argument when there are no arguments', () => {
+  it('returns an undefined argument when there are no arguments', () => {
     const action = parseAction('/s');
     expect(action.arguments).toBeUndefined();
   });
@@ -31,9 +31,10 @@ describe('Helpers', () => {
     expect(action).toBeNull();
   });
 
-  it('returns null when message does not start with action', () => {
-    const action = parseAction('a/s bla');
-    expect(action).toBeNull();
+  it('returns the action "answer" when message does not have an action', () => {
+    const action = parseAction('foo bar');
+    expect(action.name).toEqual('answer');
+    expect(action.arguments).toEqual('foo bar');
   });
 
   it('ignores spaces around message', () => {
