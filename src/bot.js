@@ -13,7 +13,7 @@ export const handler = async (event, context, callback) => {
   }
 
   try {
-    const response = await actions[action.name](action.arguments);
+    const response = await actions[action.name](action.arguments, chatId);
     await sendMessage(response, chatId);
   } catch (error) {
     await sendMessage({

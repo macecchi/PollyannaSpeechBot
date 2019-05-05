@@ -1,8 +1,9 @@
 import { handler } from './bot';
 import { sendMessage } from './telegram';
+import actions from './actions';
 
 const mockActionResponse = {
-  message: 'bla'
+  message: 'bla',
 };
 
 const mockActionError = new Error('fail');
@@ -60,6 +61,17 @@ describe('Bot', () => {
 
     expect(callback).toHaveBeenCalledTimes(1);
     expect(callback).toHaveBeenCalledWith(expect.any(Error), null);
+  });
+
+  it('calls the action with the arguments and the chat id', async () => {
+    const mockAction = jest.fn();
+    actions['mock'] = mockAction;
+    const event = eventWithMessage('/mock bla');
+
+    await handler(event, {}, jest.fn());
+
+    expect(mockAction).toHaveBeenCalledTimes(1);
+    expect(mockAction).toHaveBeenCalledWith('bla', chatId);
   });
 
   it('calls the telegram client with the response from the action execution and the chat id', async () => {
