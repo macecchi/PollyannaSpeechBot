@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "test": "jest",
+    "test": "NTBA_FIX_350=1 NTBA_FIX_319=1 TELEGRAM_TOKEN=token jest",
     "start": "NTBA_FIX_350=1 NTBA_FIX_319=1 babel-node src/start.js",
     "build": "babel src -d dist",
     "deploy": "aws-lambda-upload -v --lambda pollyanna_speech_bot --zip pollyanna.zip --region us-east-1 dist/bot.js"

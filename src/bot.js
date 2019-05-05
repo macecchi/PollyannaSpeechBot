@@ -4,6 +4,7 @@ import { sendMessage } from './telegram';
 
 export const handler = async (event, context, callback) => {
   const { message } = event.body;
+  const chatId = message.chat.id;
   const action = parseAction(message.text);
 
   if (!action || !actions[action.name]) {
@@ -13,11 +14,11 @@ export const handler = async (event, context, callback) => {
 
   try {
     const response = await actions[action.name](action.arguments);
-    await sendMessage(response);
+    await sendMessage(response, chatId);
   } catch (error) {
     await sendMessage({
       message: 'Sorry, there was an error.'
-    });
+    }, chatId);
     callback(error, action);
     return;
   }

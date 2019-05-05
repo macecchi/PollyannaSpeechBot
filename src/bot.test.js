@@ -14,12 +14,13 @@ jest.mock('./actions', () => ({
 
 jest.mock('./telegram');
 
+const chatId = '12345';
 const eventWithMessage = (text) => ({
   body: {
     message: {
       text,
       chat: {
-        id: 1234
+        id: chatId
       },
     },
   },
@@ -61,14 +62,14 @@ describe('Bot', () => {
     expect(callback).toHaveBeenCalledWith(expect.any(Error), null);
   });
 
-  it('calls the telegram client with the response from the action execution', async () => {
+  it('calls the telegram client with the response from the action execution and the chat id', async () => {
     const callback = jest.fn();
     const event = eventWithMessage('/test');
 
     await handler(event, {}, callback);
 
     expect(sendMessage).toHaveBeenCalledTimes(1);
-    expect(sendMessage).toHaveBeenCalledWith(mockActionResponse);
+    expect(sendMessage).toHaveBeenCalledWith(mockActionResponse, chatId);
   });
 
   it('calls the callback function with error when sendMessage fails', async () => {
@@ -91,7 +92,7 @@ describe('Bot', () => {
     expect(sendMessage).toHaveBeenCalledTimes(1);
     expect(sendMessage).toHaveBeenCalledWith({
       message: 'Sorry, there was an error.'
-    });
+    }, chatId);
   });
 
   it('calls the callback function with error when action execution fails', async () => {
