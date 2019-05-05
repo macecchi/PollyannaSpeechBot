@@ -7,18 +7,19 @@ export const handler = async (event, context, callback) => {
   const chatId = message.chat.id;
   const action = parseAction(message.text);
 
-  if (!action || !actions[action.name]) {
-    callback(new Error('Invalid command'), null);
-    return;
-  }
-
   try {
+    if (!action || !actions[action.name]) {
+      const errorMessage = 'Sorry, that is not a valid command.';
+      sendMessage({ text: errorMessage }, chatId);
+      callback(new Error('Invalid command'), null);
+      return;
+    }
+
     const response = await actions[action.name](action.arguments, chatId);
     await sendMessage(response, chatId);
   } catch (error) {
-    await sendMessage({
-      text: 'Sorry, there was an error.'
-    }, chatId);
+    const errorMessage = 'Sorry, there was an error.';
+    sendMessage({ text: errorMessage }, chatId);
     callback(error, action);
     return;
   }
