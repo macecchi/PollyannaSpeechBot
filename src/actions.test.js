@@ -1,5 +1,5 @@
 import actions from './actions';
-import { synthesizeText } from './polly';
+import { synthesizeText, availableVoices } from './polly';
 
 jest.mock('./polly');
 
@@ -14,7 +14,7 @@ describe('Commands', () => {
       expect(actions['s']).toBeInstanceOf(Function);
     });
 
-    it('returns the synthesized text as an audio', async () => {
+    it('returns the synthesized text from polly as an audio', async () => {
       const speak = actions['s'];
       const text = 'foo bar';
       const mockVoice = 'foo bar voice';
@@ -27,6 +27,31 @@ describe('Commands', () => {
       expect(response).toEqual({
         voice: mockVoice,
         text,
+      })
+    });
+  });
+
+  describe('List voices', () => {
+    it('has a voices action', () => {
+      expect(actions['voices']).toBeDefined();
+      expect(actions['voices']).toBeInstanceOf(Function);
+    });
+
+    it('returns a formatted list of voices from polly', async () => {
+      const voices = actions['voices'];
+      availableVoices.mockResolvedValueOnce([
+        {
+          Id: 'Cristiano',
+          Name: 'Cristiano',
+          LanguageCode: 'pt-BR',
+        }
+      ]);
+
+      const response = await voices();
+
+      expect(availableVoices).toHaveBeenCalledTimes(1);
+      expect(response).toEqual({
+        text: 'Available voices: \n- Cristiano (pt-BR)\nTo change the voice, enter /v followed by the name of the voice.'
       })
     });
   });
