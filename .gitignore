@@ -1,3 +1,5 @@
 node_modules/
 config.json
 yarn-error.log
+pollyanna.zip
+dist
