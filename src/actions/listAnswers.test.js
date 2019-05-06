@@ -21,7 +21,7 @@ describe('List answers', () => {
     const response = await listAnswers(null, chatId);
 
     expect(response).toEqual({
-      text: 'Your saved answers:\n- luke = im your father',
+      text: 'Your saved answers:\n- luke = im your father\nTo forget an answer, type /f followed by the answer shortcut.',
     });
   });
 });

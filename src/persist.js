@@ -85,8 +85,8 @@ const saveAnswer = (chatId, line, answer) => {
             TableName: "pollyanna_bot_answers",
             Item: {
                 'chat_id' : { N: chatId.toString() },
-                'line': { S: line.toLowerCase().trim() },
-                'answer': { S: answer.trim() },
+                'line': { S: line },
+                'answer': { S: answer },
             },
         }, (err, data) => {
             if (err) reject(err);
@@ -95,5 +95,21 @@ const saveAnswer = (chatId, line, answer) => {
     });
 }
 
+const forgetAnswer = (chatId, line) => {
+    return new Promise((resolve, reject) => {
+        const dynamodb = new AWS.DynamoDB();
+        dynamodb.deleteItem({
+            TableName: "pollyanna_bot_answers",
+            Key: {
+                'chat_id' : { N: chatId.toString() },
+                'line': { S: line },
+            },
+        }, (err) => {
+            if (err) reject(err);
+            else resolve();
+        });
+    });
+}
 
-module.exports = { fetchPreferences, savePreferences, saveAnswer, fetchAnswer, fetchAnswers };
+
+module.exports = { fetchPreferences, savePreferences, saveAnswer, fetchAnswer, fetchAnswers, forgetAnswer };

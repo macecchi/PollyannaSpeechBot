@@ -5,6 +5,7 @@ import setVoice from './actions/setVoice';
 import answer from './actions/answer';
 import learn from './actions/learn';
 import listAnswers from './actions/listAnswers';
+import forget from './actions/forget';
 
 describe('Commands', () => {
   it('has a speak action', () => {
@@ -29,5 +30,9 @@ describe('Commands', () => {
 
   it('has a list answers action', () => {
     expect(actions['ll']).toEqual(listAnswers);
+  });
+
+  it('has a forget answer action', () => {
+    expect(actions['f']).toEqual(forget);
   });
 });
