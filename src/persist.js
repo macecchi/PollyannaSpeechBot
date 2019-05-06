@@ -58,6 +58,26 @@ const fetchAnswer = (chatId, line) => {
     });
 }
 
+const fetchAnswers = (chatId) => {
+    return new Promise((resolve, reject) => {
+        const dynamodb = new AWS.DynamoDB();
+        dynamodb.query({
+            ExpressionAttributeValues: {
+                ':id': { N: chatId.toString() },
+            },
+            KeyConditionExpression: "chat_id = :id",
+            ProjectionExpression: "line,answer",
+            TableName: "pollyanna_bot_answers",
+        }, (err, data) => {
+            if (err) reject(err);
+            else {
+                const items = data.Items.map(i => ({ line: i.line.S, answer: i.answer.S }));
+                resolve(items);
+            }
+        });
+    });
+}
+
 const saveAnswer = (chatId, line, answer) => {
     return new Promise((resolve, reject) => {
         const dynamodb = new AWS.DynamoDB();
@@ -76,4 +96,4 @@ const saveAnswer = (chatId, line, answer) => {
 }
 
 
-module.exports = { fetchPreferences, savePreferences, saveAnswer, fetchAnswer };
+module.exports = { fetchPreferences, savePreferences, saveAnswer, fetchAnswer, fetchAnswers };
